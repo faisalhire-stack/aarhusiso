@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: ret domænet, når det ligger fast
+Sitemap: https://aarhusiso.dk/sitemap.xml
