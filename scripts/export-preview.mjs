@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 // Build first. This export keeps full-page navigation inside a single offline file.
 const project = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(project, 'dist');
-const output = resolve(process.argv[2] || resolve(project, '..', 'aarhusiso-v2.html'));
+const output = resolve(process.argv[2] || resolve(project, '..', 'aarhusiso-kundens-design.html'));
 const mimeTypes = {
   '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png',
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.ico': 'image/x-icon',

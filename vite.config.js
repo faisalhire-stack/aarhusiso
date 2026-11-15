@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
+import { FIRMA } from './src/company.js';
 
 const siteBase = process.env.SITE_BASE_PATH || '/';
 if (!siteBase.startsWith('/') || !siteBase.endsWith('/') || siteBase.startsWith('//')) {
@@ -9,6 +10,15 @@ if (!siteBase.startsWith('/') || !siteBase.endsWith('/') || siteBase.startsWith(
 export default defineConfig({
   base: siteBase,
   plugins: [{
+    name: 'company-details',
+    transformIndexHtml(html) {
+      return html.replace(/__FIRMA_([A-Z]+)__/g, (match, field) => {
+        const key = { NAVN: 'navn', TELEFON: 'telefon', TELEFONLINK: 'telefonLink', EMAIL: 'email', ADRESSE: 'adresse', POSTNUMMER: 'postnummer', BY: 'by', CVR: 'cvr', ERFARING: 'erfaring' }[field];
+        if (!key) throw new Error(`Ukendt firmafelt: ${field}`);
+        return String(FIRMA[key]).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+      });
+    },
+  }, {
     name: 'project-site-links',
     apply: 'build',
     transformIndexHtml: {
@@ -32,10 +42,14 @@ export default defineConfig({
         about: resolve(import.meta.dirname, 'om-os/index.html'),
         contact: resolve(import.meta.dirname, 'kontakt/index.html'),
         privacy: resolve(import.meta.dirname, 'privatliv/index.html'),
+        references: resolve(import.meta.dirname, 'referencer/index.html'),
         pipes: resolve(import.meta.dirname, 'ydelser/roerisolering/index.html'),
         ventilation: resolve(import.meta.dirname, 'ydelser/ventilationsisolering/index.html'),
         cladding: resolve(import.meta.dirname, 'ydelser/pladeisolering/index.html'),
         fire: resolve(import.meta.dirname, 'ydelser/brandisolering/index.html'),
+        technical: resolve(import.meta.dirname, 'ydelser/teknisk-isolering/index.html'),
+        cooling: resolve(import.meta.dirname, 'ydelser/koeleisolering/index.html'),
+        asbestos: resolve(import.meta.dirname, 'ydelser/asbestsanering/index.html'),
       },
     },
   },

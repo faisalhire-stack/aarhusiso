@@ -1,74 +1,67 @@
 # Aarhus ISO
 
-Anden designversion af Aarhus ISO's hjemmeside. En grafisk hjemmeside med et interaktivt 3D-rør, liquid glass, selvhostet typografi og ni selvstændige sider. Bygget med HTML, CSS, JavaScript, Three.js og Vite.
+Hjemmesiden følger kundens eget PDF-udkast med en finpudset, responsiv implementering: delt hero med stort logo, mintgrønne sektioner, referencebjælke, syv ydelseskort, blåt kontaktfelt og blå footer.
 
-## Udvikling
+Kundens layout og materiale er designgrundlaget. Se [DESIGN.md](DESIGN.md), før den visuelle retning ændres.
 
-Afprøvet med Node.js 24 og npm 11. Brug det eksisterende checkout; en særskilt Git-worktree er ikke nødvendig.
+## Kør lokalt
+
+Afprøvet med Node.js 24 og npm 11. Brug det eksisterende checkout; opret ikke en særskilt Git-worktree uden en konkret anmodning.
 
 ```sh
-cd /workspace/aarhusiso
 npm ci
 npm run dev
 ```
 
-Udviklingsserveren bruger port 3000. De otte undersider genereres fra `scripts/generate-pages.mjs`, der deler navigation og footer med forsiden. Ret den fælles HTML i `index.html` og ydelsesteksterne i generatoren; de genererede ydelsesfiler overskrives ved start og build.
+Serveren bruger port 3000. Projektet er statisk HTML, CSS og vanilla JavaScript med Vite som udviklings- og byggeværktøj. Ingen eksterne skrifter, tracking eller billedtjenester bruges på siden.
 
-## Build og forhåndsvisning
+## Indhold og kontakt
+
+- `index.html`: forside og fælles navigation/footer.
+- `src/company.js`: firmaets navn, telefon, e-mail, adresse, CVR og erfaring. Dette er den fælles kilde til kontaktoplysninger.
+- `scripts/generate-pages.mjs`: de 12 undersider. Genereres ved start og build.
+- `src/style.css`: farver, layout og responsive regler.
+- `src/main.js`: mobilmenu, diskret logoanimation og formularens e-mailkladde/download.
+- `public/images/client/`: billeder og referencelogoer udtrukket af kundens PDF-materiale.
+
+Forsidens `__FIRMA_*__`-felter erstattes af Vite med data fra `src/company.js`. De færdige sider har læsbare firmaoplysninger, indhold og navigation, også uden JavaScript.
+
+## Logo
+
+- `public/images/client/logo.svg`: ægte vektorkonturer, ingen indlejret bitmap.
+- `public/images/client/logo.png`: transparent PNG på 2000 × 1421 px.
+- `public/images/client/logo-mark.svg`: ringmærke, også brugt som favicon.
+
+Kildens PDF-logo er raster. Navnetrækket er vektoriseret efter de oprindelige bogstaver; ringene er opmålt, og den lille undertitel er renskrevet som konturer. Filerne er en rekonstrueret vektorudgave, ikke en original Illustrator-fil. Logoanimationen flytter kun ringene diskret og respekterer reduceret bevægelse.
+
+## Build og browserfil
 
 ```sh
 npm run build
 npm run preview
-```
-
-Build ligger i `dist/`. Stop udviklingsserveren før preview, eller brug `npm run preview -- --port 3001`.
-
-```sh
 npm run export:preview
 ```
 
-Eksporterer også `/workspace/aarhusiso-v2.html`: en selvstændig HTML-fil med indlejrede billeder, skrifter, styling og JavaScript. Den kræver ingen netværksadgang. Forhåndsvisningen navigerer mellem ni fulde sider med hash-ruter og understøtter browserens tilbage-/frem-knapper. Webversionen bruger selvstændige URL-adresser. En alternativ eksportsti kan gives til `node scripts/export-preview.mjs /ønsket/sti.html` efter build.
+`dist/` indeholder det normale produktionsbuild. Stop udviklingsserveren før preview, eller brug `npm run preview -- --port 3001`.
 
-## Funktioner i anden version
-
-- Interaktiv Three.js-model: træk, tastatur, drejeknapper samt metal-, glas- og lagvisning.
-- Liquid glass med sløring, lysreflekser og responsive layouts.
-- Separate sider til forside, ydelsesoversigt, fire ydelser, om firmaet, kontakt og privatliv.
-- Mobilnavigation og tastaturbetjente dialoger.
-- Kontaktknapper med forudvalgt ydelse på den selvstændige kontaktside.
-- Formularvalidering, gennemgang af forespørgsel og download som tekstfil.
-- Privatlivs- og billedinformation uden marketingcookies eller eksterne skrifter.
-- Danske metadata, semantiske overskrifter og optimerede WebP-billeder.
-
-## Før lancering
-
-- Formularen sender **ikke** e-mail. Indholdet behandles i browseren og kan downloades. Tilslut en reel modtager og afprøv levering, fejl og spambeskyttelse før lancering.
-- Logoet i `public/images/brand-preview.svg` er en midlertidig gengivelse af skærmbilledet. Erstat det med virksomhedens originale logofil. Favicon er ligeledes et foreløbigt mærke baseret på ringmotivet.
-- 3D-modellen er en grafisk illustration; materialer og lag er ikke specifikationer for en konkret isoleringsløsning. Ved manglende WebGL vises et statisk 3D-billede.
-- Billederne er AI-genererede illustrationer, tydeligt beskrevet i sidens billedinformation. De må ikke præsenteres som virksomhedens egne udførte projekter. Erstat med egne fotos, når de foreligger.
-- Asbestsanering er angivet som kommende ydelse.
-- Testversionen har `noindex` og `robots.txt` med `Disallow: /`. Ved lancering på det endelige domæne skal dette ændres bevidst; tilføj korrekte canonical-adresser, sitemap, virksomhedsdata og eventuel Search Console-verificering.
-- Indsæt og bekræft kontaktoplysninger. Der er ikke opfundet telefonnummer, e-mail, kundeanmeldelser eller projektcases.
-
-## Validering
-
-Produktionsbuild er afprøvet. Browserkontrol i Chromium dækker mobil og desktop, de fire ydelsessider, navigation, formularvalidering, lokal download og dialogfokus. Layout er kontrolleret ved 320, 390, 768 og 1440 px. Tilgængelighed er kontrolleret med axe-core på forside, ydelsesoversigt, en repræsentativ ydelsesside, om firmaet og kontakt; en automatisk kontrol erstatter ikke en fuld manuel tilgængelighedsvurdering.
-
-## 3D og bevægelse
-
-`src/pipe-scene.js` opretter modellen lokalt uden eksterne modeller eller teksturer. Refleksionerne genereres med et lokalt studiemiljø. Modellen stopper uden for skærmen og når fanen er skjult, og respekterer reduceret bevægelse. `src/main.js` har `mount`/`unmount`, så offline-navigation rydder grafikressourcer op, før en ny side åbnes.
+Eksporten opretter `/workspace/aarhusiso-kundens-design.html` med indlejrede billeder, skrifter, styling og JavaScript. Filen har navigation mellem alle 13 sider og kræver ingen netadgang. En anden sti kan gives til `node scripts/export-preview.mjs /sti/preview.html` efter build.
 
 ## GitHub Pages
 
 ```sh
-npm ci
 npm run build:pages
 ```
 
-GitHub Pages-versionen ligger i `dist-pages/`. Den bruger projektstien `/aarhusiso/`, også i navigation, billeder, skrifter og kontaktlinks. Almindelige builds og offline-eksporten bevarer rodstien `/`.
+`dist-pages/` bruger projektstien `/aarhusiso/` i navigation, billeder, skrifter og kontaktlinks. Almindelige builds og offline-eksporten bruger `/`.
 
-De færdige filer publiceres i repositoryets separate `gh-pages`-gren. Det er en statisk webversion uden krav om build på GitHub. GitHubs `main`-gren ændres ikke af denne publicering.
+De færdige webfiler kan publiceres på repositoryets separate `gh-pages`-gren. GitHubs `main` ændres ikke. Under **Settings > Pages** vælges **Deploy from a branch**, grenen **gh-pages**, mappen **/ (root)**. Den forventede adresse er `https://faisalhire-stack.github.io/aarhusiso/`, når Pages er aktiveret og har færdiggjort publiceringen.
 
-Aktivér den i repositoryets **Settings > Pages**: vælg **Deploy from a branch**, grenen **gh-pages**, mappen **/ (root)**, og gem. Den forventede adresse er `https://faisalhire-stack.github.io/aarhusiso/`. Adressen er først aktiv, når GitHub har aktiveret og færdiggjort Pages-publiceringen.
+## Kontaktfunktion og lancering
 
-Dette er fortsat en designforhåndsvisning med `noindex`, illustrative billeder og en formular uden e-mailafsendelse.
+Telefon- og e-maillinks bruger kundens leverede kontaktoplysninger. Formularen validerer og viser en oversigt, hvorefter brugeren selv kan åbne en udfyldt e-mailkladde i sit mailprogram eller downloade en tekstfil. Siden hævder ikke, at beskeden er sendt, og lagrer ikke formularindhold på en server.
+
+Previewet har `noindex` og `robots.txt` med `Disallow: /`. Ved endelig lancering skal det ændres bevidst på det korrekte domæne sammen med canonical, sitemap og eventuel Search Console-verificering.
+
+## Validering
+
+Produktionsbuild og de 13 sider er afprøvet i Chromium ved 320, 390, 768 og 1440 px. Browserkontrollen dækker navigation, kontaktlinks, de syv ydelser, referenceankre, logoanimation, formularvalidering, sikker tekstvisning og download. Telefon- og e-maillinks inspiceres under test og aktiveres ikke automatisk. Automatiske tilgængelighedstjek suppleres af manuel kontrol af tastatur og mobilmenu.
