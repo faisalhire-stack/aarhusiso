@@ -1,0 +1,22 @@
+{
+  "name": "aarhus-iso",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/generate-pages.mjs && vite --host 0.0.0.0",
+    "build": "node scripts/generate-pages.mjs && vite build",
+    "build:pages": "node scripts/generate-pages.mjs && SITE_BASE_PATH=/aarhusiso/ vite build --outDir dist-pages",
+    "preview": "vite preview --host 0.0.0.0",
+    "export:preview": "npm run build && node scripts/export-preview.mjs"
+  },
+  "dependencies": {
+    "@fontsource/instrument-serif": "5.3.0",
+    "@fontsource/manrope": "5.3.0",
+    "@fontsource/syne": "5.3.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.8"
+  }
+}
